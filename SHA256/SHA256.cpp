@@ -68,23 +68,24 @@ std::vector<uint32_t> SHA256::messageSchedule(std::vector<bool>& padded) {
 	//checking values
 	/*int counter = 0;
 	for (uint32_t word : wordsMessage) {
-		std::cout << std::bitset<32>(word) << " ";
+		std::cout << std::bitset<32>(word) << "\n";
 		counter++;
-		if (counter == 2) {
+		/*if (counter == 2) {
 			std::cout << "\n";
 			counter = 0;
 		}
 	}
 	
-	std::cout << "-----------------------------------------" << std::endl;
-	*/
+	std::cout << "-----------------------------------------" << std::endl;*/
+	
 
 	return wordsMessage; 
 }
 
 void SHA256::compression(std::vector<uint32_t>& wordsMessage) {
 
-
+	//Initialize working variables to initial hash value
+	a = H[0], b = H[1], c = H[2], d = H[3], e = H[4], f = H[5], g = H[6], h = H[7];
 
 	//compresion loop
 	/*
@@ -132,44 +133,60 @@ void SHA256::compression(std::vector<uint32_t>& wordsMessage) {
 	std::cout << std::bitset<32>(h) << std::endl;
 	*/
 
-	H[0] = H[0] + a;
-	H[1] = H[1] + b;
-	H[2] = H[2] + c;
-	H[3] = H[3] + d;
-	H[4] = H[4] + e;
-	H[5] = H[5] + f;
-	H[6] = H[6] + g;
-	H[7] = H[7] + h;
+	
 
 }
 
 std::string SHA256::getDigest(const std::string& toHash) {
 	this->message = toHash;
 
-	std::vector<bool> padded;
-
-	int c = 0;
 	messagePadding();
+
 	//Chunk loop
-
-	
-
+	std::vector<bool> padded;
 	for (int i = 0; i < bitsMessage.size() / 512; i++) {
-		for (int k = c; k < 512*(i+1); k++)
+		for (int k = 512*i; k < 512*(i+1); k++)
 		{
 			padded.push_back(bitsMessage[k]);
-			c = k + 1;
 		}
+		
 		
 
 		std::vector<uint32_t> words = messageSchedule(padded);
-
-		
-
 		compression(words);
-		
+
+		H[0] +=   a;
+		H[1] +=   b;
+		H[2] +=   c;
+		H[3] +=   d;
+		H[4] +=   e;
+		H[5] +=   f;
+		H[6] +=   g;
+		H[7] +=   h;
 
 		padded.clear();
+
+		// verbose
+		/*
+		std::cout << "Chunk #" << i << ":\n" << "H0: " << uint32ToHexString(H[0]) << "\n"
+			<< "H1: " << uint32ToHexString(H[1]) << "\n"
+			<< "H2: " << uint32ToHexString(H[2]) << "\n"
+			<< "H3: " << uint32ToHexString(H[3]) << "\n"
+			<< "H4: " << uint32ToHexString(H[4]) << "\n"
+			<< "H5: " << uint32ToHexString(H[5]) << "\n"
+			<< "H6: " << uint32ToHexString(H[6]) << "\n"
+			<< "H7: " << uint32ToHexString(H[7]) << "\n"
+			<< "-------------------------------------------------------------------------------------\n";
+
+		std::cout << "Chunk #" << i << ":\n" << "A: " << std::bitset<32>(a) << "\n"
+			<< "B: " << std::bitset<32>(b) << "\n"
+			<< "C: " << std::bitset<32>(c) << "\n"
+			<< "D: " << std::bitset<32>(d) << "\n"
+			<< "E: " << std::bitset<32>(e) << "\n"
+			<< "F: " << std::bitset<32>(f) << "\n"
+			<< "G: " << std::bitset<32>(g) << "\n"
+			<< "H: " << std::bitset<32>(h) << "\n"
+			<< "-------------------------------------------------------------------------------------\n";*/
 
 	}
 	

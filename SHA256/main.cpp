@@ -3,7 +3,10 @@
 int main() {
 
 	SHA256 sha;
-	std::cout << sha.getDigest("helloworldhelloworldhelloworldhelloworldhelloworldhelloworldhelloworldhelloworldhelloworldhelloworldhelloworldhelloworld");
+
+	std::string toHash = "Hello, world!";
+	std::cout << "Orig string: " << toHash << std::endl;
+	std::cout << "Hashed string: " << sha.getDigest(toHash);
 
 	return 0;
 	
